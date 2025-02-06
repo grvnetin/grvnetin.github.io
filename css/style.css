@@ -1,20 +1,21 @@
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #f0f0f0;
-    font-family: Arial, sans-serif;
-  }
-  .container {
-    text-align: center;
-  }
-  h1 {
-    font-size: 48px;
-    color: #333;
-  }
-  p {
-    font-size: 24px;
-    color: #666;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  text-align: center;
+}
+.container {
+  max-width: 600px;
+}
+h1 {
+  font-size: 3em;
+  margin-bottom: 0.5em;
+}
+p {
+  font-size: 1.2em;
+}
