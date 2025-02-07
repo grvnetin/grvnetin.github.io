@@ -1,0 +1,12 @@
+stages:
+  - fetch_jira_report
+
+fetch_jira_report:
+  stage: fetch_jira_report
+  image: python:3-slim
+  script:
+    - python fetch_jira_report.py
+    - export RELEASE_VERSION=$(cat release_version.txt)
+  artifacts:
+    paths:
+      - jira_release_report_${RELEASE_VERSION}.md
