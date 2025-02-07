@@ -1,13 +1,13 @@
 import requests
 import json
 import re
-import os  # Import the os module to read environment variables
+import os
 
 # Jira API Configuration
-JIRA_BASE_URL = os.getenv("JIRA_BASE_URL", "https://your-jira-instance.atlassian.net")  # Replace with your Jira instance
-PROJECT_KEY = os.getenv("PROJECT_KEY", "PROJ")  # Replace with your project key
-RELEASE_VERSION_PATTERN = os.getenv("RELEASE_VERSION_PATTERN", r"\d{4}_Sprint\d+")  # Update pattern to match YEAR_SprintXX*
-AUTH = (os.getenv("JIRA_EMAIL", "your-email@example.com"), os.getenv("JIRA_API_TOKEN", "your-api-token"))  # Replace with your Jira API authentication or just the API token
+JIRA_BASE_URL = os.getenv("JIRA_BASE_URL", "https://your-jira-instance.atlassian.net")
+PROJECT_KEY = os.getenv("PROJECT_KEY", "PROJ")
+RELEASE_VERSION_PATTERN = os.getenv("RELEASE_VERSION_PATTERN", r"\d{4}_Sprint\d+")
+AUTH = (os.getenv("JIRA_EMAIL", "your-email@example.com"), os.getenv("JIRA_API_TOKEN", "your-api-token"))
 
 # Fetch release issues from Jira API
 def get_release_issues():
@@ -39,9 +39,17 @@ def get_release_issues():
         print(f"Error fetching issues: {e}")
         return []
 
+# Extract release version from issues
+def extract_release_version(issues):
+    for issue in issues:
+        for fix_version in issue['fields'].get('fixVersions', []):
+            if re.match(RELEASE_VERSION_PATTERN, fix_version['name']):
+                return fix_version['name']
+    return "unknown_release"
+
 # Generate Markdown content
-def generate_markdown(issues):
-    markdown_content = f"# Jira Release Report: {RELEASE_VERSION_PATTERN}\n\n"
+def generate_markdown(issues, release_version):
+    markdown_content = f"# Jira Release Report: {release_version}\n\n"
     markdown_content += f"**Project:** {PROJECT_KEY}\n"
     markdown_content += f"**Total Issues:** {len(issues)}\n\n"
     markdown_content += "---\n\n"
@@ -72,16 +80,23 @@ def generate_markdown(issues):
     return markdown_content
 
 # Save Markdown file
-def save_markdown(content):
-    file_name = f"jira_release_report_{RELEASE_VERSION_PATTERN}.md"
+def save_markdown(content, release_version):
+    file_name = f"jira_release_report_{release_version}.md"
     with open(file_name, "w", encoding="utf-8") as file:
         file.write(content)
     print(f"Markdown report saved: {file_name}")
 
+# Save release version to a file
+def save_release_version(release_version):
+    with open("release_version.txt", "w") as file:
+        file.write(release_version)
+
 # Fetch data and create markdown
 issues = get_release_issues()
 if issues:
-    markdown_content = generate_markdown(issues)
-    save_markdown(markdown_content)
+    release_version = extract_release_version(issues)
+    save_release_version(release_version)
+    markdown_content = generate_markdown(issues, release_version)
+    save_markdown(markdown_content, release_version)
 else:
     print("No issues found for this release.")
