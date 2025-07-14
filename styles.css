@@ -1,5 +1,5 @@
-/* Custom font for a modern look */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+/* Custom font for a modern look */
 
 body {
   font-family: 'Inter', sans-serif;
@@ -28,6 +28,10 @@ body {
     background-color: #4a5568; /* Lighter gray on hover */
     transform: translateY(-5px); /* Lift effect on hover */
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+.tool-button:focus {
+    outline: 2px solid #63b3ed; /* Tailwind blue-400 */
+    outline-offset: 2px;
 }
 .tool-button i {
     font-size: 3.5rem; /* Larger icon size */
