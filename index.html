@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps & Platform Engineering Tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" xintegrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0V4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Custom font for a modern look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* Dark background */
+            color: #e2e8f0; /* Light text color */
+        }
+        /* Style for the tool buttons */
+        .tool-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem; /* Increased padding for larger buttons */
+            background-color: #2d3748; /* Darker gray for buttons */
+            border-radius: 0.75rem; /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            transition: all 0.2s ease-in-out; /* Smooth transition for hover effects */
+            text-decoration: none; /* Remove underline from links */
+            color: inherit; /* Inherit text color */
+            min-height: 150px; /* Ensure square-like shape */
+            min-width: 150px; /* Ensure square-like shape */
+            text-align: center;
+        }
+        .tool-button:hover {
+            background-color: #4a5568; /* Lighter gray on hover */
+            transform: translateY(-5px); /* Lift effect on hover */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+        }
+        .tool-button i {
+            font-size: 3.5rem; /* Larger icon size */
+            margin-bottom: 0.75rem; /* Space between icon and text */
+            color: unset; /* Allow Font Awesome's default colors for brand icons */
+        }
+        /* Explicit brand colors for some icons if Font Awesome doesn't apply them by default or for better contrast */
+        .fab.fa-docker { color: #2496ed; }
+        .fab.fa-gitlab { color: #fca326; }
+        .fab.fa-github-alt, .fab.fa-github { color: #ffffff; } /* White for dark background */
+        .fab.fa-jenkins { color: #d24939; }
+        .fab.fa-aws { color: #ff9900; }
+        .fab.fa-microsoft { color: #0078d4; } /* Azure blue */
+        .fab.fa-google { color: #4285f4; } /* Google Blue */
+        .fab.fa-jira { color: #0052cc; }
+        .fab.fa-bitbucket { color: #2684ff; }
+        .fab.fa-azure { color: #0078d4; } /* Azure blue */
+        .fab.fa-go { color: #00add8; } /* Go lang blue */
+        .fab.fa-redhat { color: #ee0000; } /* Red Hat red */
+        .fas.fa-robot { color: #4CAF50; } /* Ansible green */
+        .fas.fa-hammer { color: #FFC107; } /* Apache Ant yellow */
+        .fas.fa-stream { color: #673AB7; } /* Apache Kafka purple */
+        .fas.fa-box { color: #9C27B0; } /* Apache Maven purple */
+        .fas.fa-server { color: #F44336; } /* Apache Tomcat red */
+        .fas.fa-chart-bar { color: #00BCD4; } /* AppDynamics cyan */
+        .fas.fa-sync-alt { color: #2196F3; } /* Argo CD blue */
+        .fas.fa-archive { color: #795548; } /* Artifactory brown */
+        .fas.fa-palette { color: #FF5722; } /* Backstage orange */
+        .fas.fa-shield-alt { color: #FFEB3B; } /* Boundary yellow */
+        .fas.fa-cloud-upload-alt { color: #03A9F4; } /* Buildkite light blue */
+        .fas.fa-hat-chef { color: #8BC34A; } /* Chef light green */
+        .fas.fa-circle { color: #607D8B; } /* CircleCI blue-grey */
+        .fas.fa-cloud { color: #9E9E9E; } /* Cloud Foundry grey */
+        .fas.fa-pipeline { color: #009688; } /* Concourse CI teal */
+        .fas.fa-dog { color: #673AB7; } /* Datadog purple */
+        .fas.fa-microchip { color: #FF9800; } /* Dynatrace orange */
+        .fas.fa-search { color: #3F51B5; } /* Elasticsearch indigo */
+        .fas.fa-network-wired { color: #00BCD4; } /* Envoy Proxy cyan */
+        .fas.fa-file-import { color: #4CAF50; } /* Fluentd green */
+        .fas.fa-wrench { color: #607D8B; } /* Gradle blue-grey */
+        .fas.fa-ship { color: #00BCD4; } /* Harbor/Helm cyan */
+        .fas.fa-database { color: #4CAF50; } /* InfluxDB/MongoDB/MySQL/PostgreSQL green */
+        .fas.fa-tachometer-alt { color: #FFC107; } /* k6/New Relic yellow */
+        .fas.fa-cubes { color: #2196F3; } /* Kubernetes blue */
+        .fas.fa-puzzle-piece { color: #9C27B0; } /* Kustomize purple */
+        .fas.fa-link { color: #E91E63; } /* Linkerd pink */
+        .fas.fa-leaf { color: #8BC34A; } /* MongoDB light green */
+        .fas.fa-desktop { color: #00BCD4; } /* Zabbix cyan */
+        .fas.fa-bell { color: #FF5722; } /* PagerDuty orange */
+
+        .tool-button span {
+            font-size: 1.25rem; /* Larger text size */
+            font-weight: 600; /* Semi-bold text */
+            line-height: 1.2; /* Adjust line height for better readability */
+        }
+
+        /* Responsive adjustments for the grid: 5 tools in a row */
+        .grid-cols-responsive {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Default for smaller screens */
+        }
+        @media (min-width: 640px) { /* Small screens (sm) */
+            .grid-cols-responsive {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+        @media (min-width: 768px) { /* Medium screens (md) */
+            .grid-cols-responsive {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+        @media (min-width: 1024px) { /* Large screens (lg) */
+            .grid-cols-responsive {
+                grid-template-columns: repeat(5, minmax(0, 1fr)); /* Exactly 5 columns */
+            }
+        }
+        @media (min-width: 1280px) { /* Extra large screens (xl) */
+            .grid-cols-responsive {
+                grid-template-columns: repeat(5, minmax(0, 1fr)); /* Exactly 5 columns */
+            }
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8 lg:p-10">
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-center mb-10 text-blue-400">
+            DevOps & Platform Engineering Tools
+        </h1>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-6 grid-cols-responsive">
+            <a href="https://docs.ansible.com/" target="_blank" class="tool-button">
+                <i class="fas fa-robot"></i>
+                <span>Ansible</span>
+            </a>
+            <a href="https://ant.apache.org/manual/index.html" target="_blank" class="tool-button">
+                <i class="fas fa-hammer"></i>
+                <span>Apache Ant</span>
+            </a>
+            <a href="https://kafka.apache.org/documentation/" target="_blank" class="tool-button">
+                <i class="fas fa-stream"></i>
+                <span>Apache Kafka</span>
+            </a>
+            <a href="https://maven.apache.org/guides/index.html" target="_blank" class="tool-button">
+                <i class="fas fa-box"></i>
+                <span>Apache Maven</span>
+            </a>
+            <a href="https://tomcat.apache.org/tomcat-9.0-doc/index.html" target="_blank" class="tool-button">
+                <i class="fas fa-server"></i>
+                <span>Apache Tomcat</span>
+            </a>
+            <a href="https://docs.appdynamics.com/" target="_blank" class="tool-button">
+                <i class="fas fa-chart-bar"></i>
+                <span>AppDynamics</span>
+            </a>
+            <a href="https://argo-cd.readthedocs.io/en/stable/" target="_blank" class="tool-button">
+                <i class="fas fa-sync-alt"></i>
+                <span>Argo CD</span>
+            </a>
+            <a href="https://jfrog.com/help/r/jfrog-artifactory-documentation/" target="_blank" class="tool-button">
+                <i class="fas fa-archive"></i>
+                <span>Artifactory</span>
+            </a>
+            <a href="https://support.atlassian.com/jira-software-cloud/resources/" target="_blank" class="tool-button">
+                <i class="fab fa-jira"></i>
+                <span>Atlassian Jira</span>
+            </a>
+            <a href="https://docs.aws.amazon.com/" target="_blank" class="tool-button">
+                <i class="fab fa-aws"></i>
+                <span>AWS</span>
+            </a>
+            <a href="https://docs.microsoft.com/en-us/azure/" target="_blank" class="tool-button">
+                <i class="fab fa-microsoft"></i>
+                <span>Azure</span>
+            </a>
+            <a href="https://backstage.io/docs/" target="_blank" class="tool-button">
+                <i class="fas fa-palette"></i>
+                <span>Backstage</span>
+            </a>
+            <a href="https://support.atlassian.com/bitbucket-cloud/resources/" target="_blank" class="tool-button">
+                <i class="fab fa-bitbucket"></i>
+                <span>Bitbucket</span>
+            </a>
+            <a href="https://www.boundaryproject.io/docs" target="_blank" class="tool-button">
+                <i class="fas fa-shield-alt"></i>
+                <span>Boundary</span>
+            </a>
+            <a href="https://www.buildkite.com/docs/" target="_blank" class="tool-button">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Buildkite</span>
+            </a>
+            <a href="https://docs.chef.io/" target="_blank" class="tool-button">
+                <i class="fas fa-hat-chef"></i>
+                <span>Chef</span>
+            </a>
+            <a href="https://circleci.com/docs/" target="_blank" class="tool-button">
+                <i class="fas fa-circle"></i>
+                <span>CircleCI</span>
+            </a>
+            <a href="https://docs.cloudfoundry.org/" target="_blank" class="tool-button">
+                <i class="fas fa-cloud"></i>
+                <span>Cloud Foundry</span>
+            </a>
+            <a href="https://concourse-ci.org/docs.html" target="_blank" class="tool-button">
+                <i class="fas fa-pipeline"></i>
+                <span>Concourse CI</span>
+            </a>
+            <a href="https://www.consul.io/docs" target="_blank" class="tool-button">
+                <i class="fas fa-server"></i>
+                <span>Consul</span>
+            </a>
+            <a href="https://docs.datadoghq.com/" target="_blank" class="tool-button">
+                <i class="fas fa-dog"></i>
+                <span>Datadog</span>
+            </a>
+            <a href="https://docs.docker.com/" target="_blank" class="tool-button">
+                <i class="fab fa-docker"></i>
+                <span>Docker</span>
+            </a>
+            <a href="https://www.dynatrace.com/support/help/" target="_blank" class="tool-button">
+                <i class="fas fa-microchip"></i>
+                <span>Dynatrace</span>
+            </a>
+            <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" target="_blank" class="tool-button">
+                <i class="fas fa-search"></i>
+                <span>Elasticsearch</span>
+            </a>
+            <a href="https://www.envoyproxy.io/docs" target="_blank" class="tool-button">
+                <i class="fas fa-network-wired"></i>
+                <span>Envoy Proxy</span>
+            </a>
+            <a href="https://docs.fluentd.org/" target="_blank" class="tool-button">
+                <i class="fas fa-file-import"></i>
+                <span>Fluentd</span>
+            </a>
+            <a href="https://fluxcd.io/docs/" target="_blank" class="tool-button">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Flux CD</span>
+            </a>
+            <a href="https://cloud.google.com/docs" target="_blank" class="tool-button">
+                <i class="fab fa-google"></i>
+                <span>GCP</span>
+            </a>
+            <a href="https://git-scm.com/doc" target="_blank" class="tool-button">
+                <i class="fas fa-code-branch"></i>
+                <span>Git</span>
+            </a>
+            <a href="https://docs.github.com/en/actions" target="_blank" class="tool-button">
+                <i class="fab fa-github-alt"></i>
+                <span>GitHub Actions</span>
+            </a>
+            <a href="https://docs.gitlab.com/ee/ci/" target="_blank" class="tool-button">
+                <i class="fab fa-gitlab"></i>
+                <span>GitLab CI/CD</span>
+            </a>
+            <a href="https://grafana.com/docs/" target="_blank" class="tool-button">
+                <i class="fas fa-chart-pie"></i>
+                <span>Grafana</span>
+            </a>
+            <a href="https://docs.gradle.org/" target="_blank" class="tool-button">
+                <i class="fas fa-wrench"></i>
+                <span>Gradle</span>
+            </a>
+            <a href="https://goharbor.io/docs/" target="_blank" class="tool-button">
+                <i class="fas fa-ship"></i>
+                <span>Harbor</span>
+            </a>
+            <a href="https://helm.sh/docs/" target="_blank" class="tool-button">
+                <i class="fas fa-ship"></i>
+                <span>Helm</span>
+            </a>
+            <a href="https://docs.influxdata.com/influxdb/latest/" target="_blank" class="tool-button">
+                <i class="fas fa-database"></i>
+                <span>InfluxDB</span>
+            </a>
+            <a href="https://istio.io/latest/docs/" target="_blank" class="tool-button">
+                <i class="fas fa-network-wired"></i>
+                <span>Istio</span>
+            </a>
+            <a href="https://www.jenkins.io/doc/" target="_blank" class="tool-button">
+                <i class="fab fa-jenkins"></i>
+                <span>Jenkins</span>
+            </a>
+            <a href="https://www.jetbrains.com/help/teamcity/teamcity-documentation.html" target="_blank" class="tool-button">
+                <i class="fas fa-city"></i>
+                <span>JetBrains TeamCity</span>
+            </a>
+            <a href="https://k6.io/docs/" target="_blank" class="tool-button">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>k6</span>
+            </a>
+            <a href="https://kubernetes.io/docs/home/" target="_blank" class="tool-button">
+                <i class="fas fa-cubes"></i>
+                <span>Kubernetes</span>
+            </a>
+            <a href="https://kubectl.docs.kubernetes.io/guides/introduction/kustomize/" target="_blank" class="tool-button">
+                <i class="fas fa-puzzle-piece"></i>
+                <span>Kustomize</span>
+            </a>
+            <a href="https://linkerd.io/docs/" target="_blank" class="tool-button">
+                <i class="fas fa-link"></i>
+                <span>Linkerd</span>
+            </a>
+            <a href="https://www.elastic.co/guide/en/logstash/current/index.html" target="_blank" class="tool-button">
+                <i class="fas fa-stream"></i>
+                <span>Logstash</span>
+            </a>
+            <a href="https://minikube.sigs.k8s.io/docs/" target="_blank" class="tool-button">
+                <i class="fas fa-microchip"></i>
+                <span>Minikube</span>
+            </a>
+            <a href="https://www.mongodb.com/docs/" target="_blank" class="tool-button">
+                <i class="fas fa-leaf"></i>
+                <span>MongoDB</span>
+            </a>
+            <a href="https://dev.mysql.com/doc/" target="_blank" class="tool-button">
+                <i class="fas fa-database"></i>
+                <span>MySQL</span>
+            </a>
+            <a href="https://docs.newrelic.com/" target="_blank" class="tool-button">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>New Relic</span>
+            </a>
+            <a href="https://help.sonatype.com/repomanager3" target="_blank" class="tool-button">
+                <i class="fas fa-box-open"></i>
+                <span>Nexus</span>
+            </a>
+            <a href="https://nginx.org/en/docs/" target="_blank" class="tool-button">
+                <i class="fas fa-server"></i>
+                <span>Nginx</span>
+            </a>
+            <a href="https://docs.opa.dev/" target="_blank" class="tool-button">
+                <i class="fas fa-shield-alt"></i>
+                <span>Open Policy Agent (OPA)</span>
+            </a>
+            <a href="https://opentelemetry.io/docs/" target="_blank" class="tool-button">
+                <i class="fas fa-wave-square"></i>
+                <span>OpenTelemetry</span>
+            </a>
+            <a href="https://support.pagerduty.com/main/docs/introduction/" target="_blank" class="tool-button">
+                <i class="fas fa-bell"></i>
+                <span>PagerDuty</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

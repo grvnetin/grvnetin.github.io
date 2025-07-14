@@ -1,0 +1,117 @@
+        /* Custom font for a modern look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        body {
+          font-family: 'Inter', sans-serif;
+          background-color: #1a202c; /* Dark background */
+          color: #e2e8f0; /* Light text color */
+        }
+
+        /* Style for the tool buttons */
+        .tool-button {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 1.5rem; /* Increased padding for larger buttons */
+          background-color: #2d3748; /* Darker gray for buttons */
+          border-radius: 0.75rem; /* Rounded corners */
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+          transition: all 0.2s ease-in-out; /* Smooth transition for hover effects */
+          text-decoration: none; /* Remove underline from links */
+          color: inherit; /* Inherit text color */
+          min-height: 150px; /* Ensure square-like shape */
+          min-width: 150px; /* Ensure square-like shape */
+          text-align: center;
+        }
+
+        .tool-button:hover {
+          background-color: #4a5568; /* Lighter gray on hover */
+          transform: translateY(-5px); /* Lift effect on hover */
+          box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+        }
+
+        .tool-button i {
+          font-size: 3.5rem; /* Larger icon size */
+          margin-bottom: 0.75rem; /* Space between icon and text */
+          color: unset; /* Allow Font Awesome's default colors for brand icons */
+        }
+
+        /* Explicit brand colors for some icons if Font Awesome doesn't apply them by default or for better contrast */
+        .fab.fa-docker { color: #2496ed; }
+        .fab.fa-gitlab { color: #fca326; }
+        .fab.fa-github-alt, .fab.fa-github { color: #ffffff; } /* White for dark background */
+        .fab.fa-jenkins { color: #d24939; }
+        .fab.fa-aws { color: #ff9900; }
+        .fab.fa-microsoft { color: #0078d4; } /* Azure blue */
+        .fab.fa-google { color: #4285f4; } /* Google Blue */
+        .fab.fa-jira { color: #0052cc; }
+        .fab.fa-bitbucket { color: #2684ff; }
+        .fab.fa-azure { color: #0078d4; } /* Azure blue */
+        .fab.fa-go { color: #00add8; } /* Go lang blue */
+        .fab.fa-redhat { color: #ee0000; } /* Red Hat red */
+        .fas.fa-robot { color: #4CAF50; } /* Ansible green */
+        .fas.fa-hammer { color: #FFC107; } /* Apache Ant yellow */
+        .fas.fa-stream { color: #673AB7; } /* Apache Kafka purple */
+        .fas.fa-box { color: #9C27B0; } /* Apache Maven purple */
+        .fas.fa-server { color: #F44336; } /* Apache Tomcat red */
+        .fas.fa-chart-bar { color: #00BCD4; } /* AppDynamics cyan */
+        .fas.fa-sync-alt { color: #2196F3; } /* Argo CD blue */
+        .fas.fa-archive { color: #795548; } /* Artifactory brown */
+        .fas.fa-palette { color: #FF5722; } /* Backstage orange */
+        .fas.fa-shield-alt { color: #FFEB3B; } /* Boundary yellow */
+        .fas.fa-cloud-upload-alt { color: #03A9F4; } /* Buildkite light blue */
+        .fas.fa-hat-chef { color: #8BC34A; } /* Chef light green */
+        .fas.fa-circle { color: #607D8B; } /* CircleCI blue-grey */
+        .fas.fa-cloud { color: #9E9E9E; } /* Cloud Foundry grey */
+        .fas.fa-pipeline { color: #009688; } /* Concourse CI teal */
+        .fas.fa-dog { color: #673AB7; } /* Datadog purple */
+        .fas.fa-microchip { color: #FF9800; } /* Dynatrace orange */
+        .fas.fa-search { color: #3F51B5; } /* Elasticsearch indigo */
+        .fas.fa-network-wired { color: #00BCD4; } /* Envoy Proxy cyan */
+        .fas.fa-file-import { color: #4CAF50; } /* Fluentd green */
+        .fas.fa-wrench { color: #607D8B; } /* Gradle blue-grey */
+        .fas.fa-ship { color: #00BCD4; } /* Harbor/Helm cyan */
+        .fas.fa-database { color: #4CAF50; } /* InfluxDB/MongoDB/MySQL/PostgreSQL green */
+        .fas.fa-tachometer-alt { color: #FFC107; } /* k6/New Relic yellow */
+        .fas.fa-cubes { color: #2196F3; } /* Kubernetes blue */
+        .fas.fa-puzzle-piece { color: #9C27B0; } /* Kustomize purple */
+        .fas.fa-link { color: #E91E63; } /* Linkerd pink */
+        .fas.fa-leaf { color: #8BC34A; } /* MongoDB light green */
+        .fas.fa-desktop { color: #00BCD4; } /* Zabbix cyan */
+        .fas.fa-bell { color: #FF5722; } /* PagerDuty orange */
+
+        .tool-button span {
+          font-size: 1.25rem; /* Larger text size */
+          font-weight: 600; /* Semi-bold text */
+          line-height: 1.2; /* Adjust line height for better readability */
+        }
+
+        /* Responsive adjustments for the grid: 5 tools in a row */
+        .grid-cols-responsive {
+          grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Default for smaller screens */
+        }
+
+        @media (min-width: 640px) { /* Small screens (sm) */
+          .grid-cols-responsive {
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+          }
+        }
+
+        @media (min-width: 768px) { /* Medium screens (md) */
+          .grid-cols-responsive {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          }
+        }
+
+        @media (min-width: 1024px) { /* Large screens (lg) */
+          .grid-cols-responsive {
+            grid-template-columns: repeat(5, minmax(0, 1fr)); /* Exactly 5 columns */
+          }
+        }
+
+        @media (min-width: 1280px) { /* Extra large screens (xl) */
+          .grid-cols-responsive {
+            grid-template-columns: repeat(5, minmax(0, 1fr)); /* Exactly 5 columns */
+          }
+        }
