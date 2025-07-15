@@ -1,243 +1,650 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DTDocs</title>
+    <title>Interactive Guide: GitLab, Helm, & Kubernetes</title>
+    <!-- Chosen Palette: Warm Neutrals (Stone, Slate, Sky) -->
+    <!-- Application Structure Plan: The application is designed as a non-linear, task-oriented dashboard. This structure was chosen over a linear report format to better serve an entry-level DevOps engineer who may need to quickly reference specific topics (e.g., "troubleshooting pod errors") or compare concepts (e.g., "monorepo vs. polyrepo"). The main navigation is thematic (Core Tech, Architecture, Guides, Best Practices), promoting exploration. User flow begins with a high-level overview diagram, allowing users to drill down into specific technologies or jump directly to practical implementation strategies via the persistent top navigation. This prioritizes usability and quick access to information over the original report's narrative sequence. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Relationship between GitLab, Helm, K8s. Goal: Inform. Viz: Interactive HTML/CSS diagram. Interaction: Hover/click highlights a tool and shows a summary. Justification: Provides a quick, memorable mental model of the ecosystem. Library: Vanilla JS.
+        - Report Info: Comparison tables (Workloads, Monorepo/Polyrepo). Goal: Compare. Viz: Two-column toggleable views. Interaction: User clicks a button to switch content. Justification: Simplifies direct comparison. Library: Vanilla JS.
+        - Report Info: Deployment flow. Goal: Organize/Change. Viz: Clickable vertical stepper. Interaction: User clicks a step to expand its details. Justification: Breaks down a complex process into digestible chunks. Library: Vanilla JS.
+        - Report Info: Kubernetes Workload Types. Goal: Compare/Inform. Viz: Bar Chart inside content card. Interaction: Chart visually represents abstract properties (statefulness, identity). Justification: Visual data aids retention better than text alone. Library: Chart.js.
+        - Report Info: Troubleshooting guide. Goal: Organize/Inform. Viz: Interactive accordion/collapsible list. Interaction: User clicks a common error to reveal causes and solutions. Justification: Mimics a "symptom checker" for faster problem resolution. Library: Vanilla JS.
+        - Report Info: Best Practices. Goal: Organize. Viz: Filterable grid of cards. Interaction: User clicks filter buttons (e.g., "Security"). Justification: Allows users to focus on specific areas of improvement. Library: Vanilla JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" xintegrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0V4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" /> 
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link.active {
+            color: #0284c7; 
+            border-bottom-color: #0284c7;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .diagram-item {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .diagram-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+    </style>
 </head>
-<body class="p-4 sm:p-6 md:p-8 lg:p-10">
-    <main class="max-w-7xl mx-auto">
-        <h1 class="text-4xl sm:text-5xl font-extrabold text-center mb-10 text-blue-400">
-            DevOps Tools Documentation
-        </h1>
-        <section class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-6 grid-cols-responsive">
-            <a href="https://docs.ansible.com/" target="_blank" class="tool-button" aria-label="Ansible Documentation" rel="noopener noreferrer">
-                <i class="fas fa-robot"></i>
-                <span>Ansible</span>
-            </a>
-            <a href="https://ant.apache.org/manual/index.html" target="_blank" class="tool-button" aria-label="Apache Ant Documentation" rel="noopener noreferrer">
-                <i class="fas fa-hammer"></i>
-                <span>Apache Ant</span>
-            </a>
-            <a href="https://kafka.apache.org/documentation/" target="_blank" class="tool-button" aria-label="Apache Kafka Documentation" rel="noopener noreferrer">
-                <i class="fas fa-stream"></i>
-                <span>Apache Kafka</span>
-            </a>
-            <a href="https://maven.apache.org/guides/index.html" target="_blank" class="tool-button" aria-label="Apache Maven Documentation" rel="noopener noreferrer">
-                <i class="fas fa-box"></i>
-                <span>Apache Maven</span>
-            </a>
-            <a href="https://tomcat.apache.org/tomcat-9.0-doc/index.html" target="_blank" class="tool-button" aria-label="Apache Tomcat Documentation" rel="noopener noreferrer">
-                <i class="fas fa-server"></i>
-                <span>Apache Tomcat</span>
-            </a>
-            <a href="https://docs.appdynamics.com/" target="_blank" class="tool-button" aria-label="AppDynamics Documentation" rel="noopener noreferrer">
-                <i class="fas fa-chart-bar"></i>
-                <span>AppDynamics</span>
-            </a>
-            <a href="https://argo-cd.readthedocs.io/en/stable/" target="_blank" class="tool-button" aria-label="Argo CD Documentation" rel="noopener noreferrer">
-                <i class="fas fa-sync-alt"></i>
-                <span>Argo CD</span>
-            </a>
-            <a href="https://jfrog.com/help/r/jfrog-artifactory-documentation/" target="_blank" class="tool-button" aria-label="Artifactory Documentation" rel="noopener noreferrer">
-                <i class="fas fa-archive"></i>
-                <span>Artifactory</span>
-            </a>
-            <a href="https://support.atlassian.com/jira-software-cloud/resources/" target="_blank" class="tool-button" aria-label="Atlassian Jira Documentation" rel="noopener noreferrer">
-                <i class="fab fa-jira"></i>
-                <span>Atlassian Jira</span>
-            </a>
-            <a href="https://docs.aws.amazon.com/" target="_blank" class="tool-button" aria-label="AWS Documentation" rel="noopener noreferrer">
-                <i class="fab fa-aws"></i>
-                <span>AWS</span>
-            </a>
-            <a href="https://docs.microsoft.com/en-us/azure/" target="_blank" class="tool-button" aria-label="Azure Documentation" rel="noopener noreferrer">
-                <i class="fab fa-microsoft"></i>
-                <span>Azure</span>
-            </a>
-            <a href="https://backstage.io/docs/" target="_blank" class="tool-button" aria-label="Backstage Documentation" rel="noopener noreferrer">
-                <i class="fas fa-palette"></i>
-                <span>Backstage</span>
-            </a>
-            <a href="https://support.atlassian.com/bitbucket-cloud/resources/" target="_blank" class="tool-button" aria-label="Bitbucket Documentation" rel="noopener noreferrer">
-                <i class="fab fa-bitbucket"></i>
-                <span>Bitbucket</span>
-            </a>
-            <a href="https://www.boundaryproject.io/docs" target="_blank" class="tool-button" aria-label="Boundary Documentation" rel="noopener noreferrer">
-                <i class="fas fa-shield-alt"></i>
-                <span>Boundary</span>
-            </a>
-            <a href="https://www.buildkite.com/docs/" target="_blank" class="tool-button" aria-label="Buildkite Documentation" rel="noopener noreferrer">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <span>Buildkite</span>
-            </a>
-            <a href="https://docs.chef.io/" target="_blank" class="tool-button" aria-label="Chef Documentation" rel="noopener noreferrer">
-                <i class="fas fa-hat-chef"></i>
-                <span>Chef</span>
-            </a>
-            <a href="https://circleci.com/docs/" target="_blank" class="tool-button" aria-label="CircleCI Documentation" rel="noopener noreferrer">
-                <i class="fas fa-circle"></i>
-                <span>CircleCI</span>
-            </a>
-            <a href="https://docs.cloudfoundry.org/" target="_blank" class="tool-button" aria-label="Cloud Foundry Documentation" rel="noopener noreferrer">
-                <i class="fas fa-cloud"></i>
-                <span>Cloud Foundry</span>
-            </a>
-            <a href="https://concourse-ci.org/docs.html" target="_blank" class="tool-button" aria-label="Concourse CI Documentation" rel="noopener noreferrer">
-                <i class="fas fa-pipeline"></i>
-                <span>Concourse CI</span>
-            </a>
-            <a href="https://www.consul.io/docs" target="_blank" class="tool-button" aria-label="Consul Documentation" rel="noopener noreferrer">
-                <i class="fas fa-server"></i>
-                <span>Consul</span>
-            </a>
-            <a href="https://docs.datadoghq.com/" target="_blank" class="tool-button" aria-label="Datadog Documentation" rel="noopener noreferrer">
-                <i class="fas fa-dog"></i>
-                <span>Datadog</span>
-            </a>
-            <a href="https://docs.docker.com/" target="_blank" class="tool-button" aria-label="Docker Documentation" rel="noopener noreferrer">
-                <i class="fab fa-docker"></i>
-                <span>Docker</span>
-            </a>
-            <a href="https://www.dynatrace.com/support/help/" target="_blank" class="tool-button" aria-label="Dynatrace Documentation" rel="noopener noreferrer">
-                <i class="fas fa-microchip"></i>
-                <span>Dynatrace</span>
-            </a>
-            <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" target="_blank" class="tool-button" aria-label="Elasticsearch Documentation" rel="noopener noreferrer">
-                <i class="fas fa-search"></i>
-                <span>Elasticsearch</span>
-            </a>
-            <a href="https://www.envoyproxy.io/docs" target="_blank" class="tool-button" aria-label="Envoy Proxy Documentation" rel="noopener noreferrer">
-                <i class="fas fa-network-wired"></i>
-                <span>Envoy Proxy</span>
-            </a>
-            <a href="https://docs.fluentbit.io/manual/" target="_blank" class="tool-button" aria-label="FluentBit Documentation" rel="noopener noreferrer">
-                <i class="fas fa-fire"></i>
-                <span>FluentBit</span>
-            </a>
-            <a href="https://docs.fluentd.org/" target="_blank" class="tool-button" aria-label="Fluentd Documentation" rel="noopener noreferrer">
-                <i class="fas fa-file-import"></i>
-                <span>Fluentd</span>
-            </a>
-            <a href="https://fluxcd.io/docs/" target="_blank" class="tool-button" aria-label="Flux CD Documentation" rel="noopener noreferrer">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <span>Flux CD</span>
-            </a>
-            <a href="https://cloud.google.com/docs" target="_blank" class="tool-button" aria-label="GCP Documentation" rel="noopener noreferrer">
-                <i class="fab fa-google"></i>
-                <span>GCP</span>
-            </a>
-            <a href="https://git-scm.com/doc" target="_blank" class="tool-button" aria-label="Git Documentation" rel="noopener noreferrer">
-                <i class="fas fa-code-branch"></i>
-                <span>Git</span>
-            </a>
-            <a href="https://docs.github.com/en/actions" target="_blank" class="tool-button" aria-label="GitHub Actions Documentation" rel="noopener noreferrer">
-                <i class="fab fa-github-alt"></i>
-                <span>GitHub Actions</span>
-            </a>
-            <a href="https://docs.gitlab.com/ee/ci/" target="_blank" class="tool-button" aria-label="GitLab CI/CD Documentation" rel="noopener noreferrer">
-                <i class="fab fa-gitlab"></i>
-                <span>GitLab CI/CD</span>
-            </a>
-            <a href="https://grafana.com/docs/" target="_blank" class="tool-button" aria-label="Grafana Documentation" rel="noopener noreferrer">
-                <i class="fas fa-chart-pie"></i>
-                <span>Grafana</span>
-            </a>
-            <a href="https://docs.gradle.org/" target="_blank" class="tool-button" aria-label="Gradle Documentation" rel="noopener noreferrer">
-                <i class="fas fa-wrench"></i>
-                <span>Gradle</span>
-            </a>
-            <a href="https://goharbor.io/docs/" target="_blank" class="tool-button" aria-label="Harbor Documentation" rel="noopener noreferrer">
-                <i class="fas fa-ship"></i>
-                <span>Harbor</span>
-            </a>
-            <a href="https://helm.sh/docs/" target="_blank" class="tool-button" aria-label="Helm Documentation" rel="noopener noreferrer">
-                <i class="fas fa-ship"></i>
-                <span>Helm</span>
-            </a>
-            <a href="https://docs.influxdata.com/influxdb/latest/" target="_blank" class="tool-button" aria-label="InfluxDB Documentation" rel="noopener noreferrer">
-                <i class="fas fa-database"></i>
-                <span>InfluxDB</span>
-            </a>
-            <a href="https://istio.io/latest/docs/" target="_blank" class="tool-button" aria-label="Istio Documentation" rel="noopener noreferrer">
-                <i class="fas fa-network-wired"></i>
-                <span>Istio</span>
-            </a>
-            <a href="https://www.jenkins.io/doc/" target="_blank" class="tool-button" aria-label="Jenkins Documentation" rel="noopener noreferrer">
-                <i class="fab fa-jenkins"></i>
-                <span>Jenkins</span>
-            </a>
-            <a href="https://www.jetbrains.com/help/teamcity/teamcity-documentation.html" target="_blank" class="tool-button" aria-label="JetBrains TeamCity Documentation" rel="noopener noreferrer">
-                <i class="fas fa-city"></i>
-                <span>JetBrains TeamCity</span>
-            </a>
-            <a href="https://k6.io/docs/" target="_blank" class="tool-button" aria-label="k6 Documentation" rel="noopener noreferrer">
-                <i class="fas fa-tachometer-alt"></i>
-                <span>k6</span>
-            </a>
-            <a href="https://kubernetes.io/docs/home/" target="_blank" class="tool-button" aria-label="Kubernetes Documentation" rel="noopener noreferrer">
-                <i class="fas fa-cubes"></i>
-                <span>Kubernetes</span>
-            </a>
-            <a href="https://kubectl.docs.kubernetes.io/guides/introduction/kustomize/" target="_blank" class="tool-button" aria-label="Kustomize Documentation" rel="noopener noreferrer">
-                <i class="fas fa-puzzle-piece"></i>
-                <span>Kustomize</span>
-            </a>
-            <a href="https://linkerd.io/docs/" target="_blank" class="tool-button" aria-label="Linkerd Documentation" rel="noopener noreferrer">
-                <i class="fas fa-link"></i>
-                <span>Linkerd</span>
-            </a>
-            <a href="https://www.elastic.co/guide/en/logstash/current/index.html" target="_blank" class="tool-button" aria-label="Logstash Documentation" rel="noopener noreferrer">
-                <i class="fas fa-stream"></i>
-                <span>Logstash</span>
-            </a>
-            <a href="https://minikube.sigs.k8s.io/docs/" target="_blank" class="tool-button" aria-label="Minikube Documentation" rel="noopener noreferrer">
-                <i class="fas fa-microchip"></i>
-                <span>Minikube</span>
-            </a>
-            <a href="https://www.mongodb.com/docs/" target="_blank" class="tool-button" aria-label="MongoDB Documentation" rel="noopener noreferrer">
-                <i class="fas fa-leaf"></i>
-                <span>MongoDB</span>
-            </a>
-            <a href="https://dev.mysql.com/doc/" target="_blank" class="tool-button" aria-label="MySQL Documentation" rel="noopener noreferrer">
-                <i class="fas fa-database"></i>
-                <span>MySQL</span>
-            </a>
-            <a href="https://docs.newrelic.com/" target="_blank" class="tool-button" aria-label="New Relic Documentation" rel="noopener noreferrer">
-                <i class="fas fa-tachometer-alt"></i>
-                <span>New Relic</span>
-            </a>
-            <a href="https://help.sonatype.com/repomanager3" target="_blank" class="tool-button" aria-label="Nexus Documentation" rel="noopener noreferrer">
-                <i class="fas fa-box-open"></i>
-                <span>Nexus</span>
-            </a>
-            <a href="https://nginx.org/en/docs/" target="_blank" class="tool-button" aria-label="Nginx Documentation" rel="noopener noreferrer">
-                <i class="fas fa-server"></i>
-                <span>Nginx</span>
-            </a>
-            <a href="https://docs.opa.dev/" target="_blank" class="tool-button" aria-label="Open Policy Agent (OPA) Documentation" rel="noopener noreferrer">
-                <i class="fas fa-shield-alt"></i>
-                <span>Open Policy Agent (OPA)</span>
-            </a>
-            <a href="https://opentelemetry.io/docs/" target="_blank" class="tool-button" aria-label="OpenTelemetry Documentation" rel="noopener noreferrer">
-                <i class="fas fa-wave-square"></i>
-                <span>OpenTelemetry</span>
-            </a>
-            <a href="https://support.pagerduty.com/main/docs/introduction/" target="_blank" class="tool-button" aria-label="PagerDuty Documentation" rel="noopener noreferrer">
-                <i class="fas fa-bell"></i>
-                <span>PagerDuty</span>
-            </a>
-            <a href="https://docs.prismacloud.io/en" target="_blank" class="tool-button" aria-label="Prisma Cloud Documentation" rel="noopener noreferrer">
-                <i class="fas fa-shield-alt"></i>
-                <span>Prisma Cloud</span>
-            </a>
-        </section>
-    </main>
+<body class="bg-stone-50 text-slate-800">
+
+    <div id="app" class="container mx-auto px-4 py-8">
+        
+        <header class="bg-white/80 backdrop-blur-md sticky top-4 z-50 rounded-xl shadow-md mb-8">
+            <nav class="flex justify-center items-center p-4 space-x-4 md:space-x-8 border-b border-slate-200">
+                <a href="#overview" class="nav-link text-slate-600 hover:text-sky-600 border-b-2 border-transparent pb-1 font-medium">Overview</a>
+                <a href="#core-tech" class="nav-link text-slate-600 hover:text-sky-600 border-b-2 border-transparent pb-1 font-medium">Core Technologies</a>
+                <a href="#architecture" class="nav-link text-slate-600 hover:text-sky-600 border-b-2 border-transparent pb-1 font-medium">Architecture</a>
+                <a href="#guides" class="nav-link text-slate-600 hover:text-sky-600 border-b-2 border-transparent pb-1 font-medium">Practical Guides</a>
+                <a href="#best-practices" class="nav-link text-slate-600 hover:text-sky-600 border-b-2 border-transparent pb-1 font-medium">Best Practices</a>
+            </nav>
+        </header>
+
+        <main>
+            <section id="overview" class="content-section">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Mastering Complex Deployments</h1>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto">An interactive guide to GitLab, Helm, and Kubernetes for the modern DevOps engineer.</p>
+                </div>
+                
+                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-center mb-2 text-slate-800">The DevOps Ecosystem at a Glance</h2>
+                    <p class="text-center text-slate-500 mb-8">This application translates a dense technical report into an interactive experience. Its structure helps you quickly find information and understand how these powerful tools work together. Explore the diagram below by hovering over each component to see its role, and click to dive deeper into the core concepts.</p>
+
+                    <div id="interactive-diagram" class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 font-semibold text-slate-700">
+                        <div class="diagram-item bg-stone-100 p-6 rounded-lg text-center shadow w-60 cursor-pointer" data-tech="gitlab">
+                            <span class="text-4xl mb-2">🦊</span>
+                            <h3 class="text-xl">GitLab CI/CD</h3>
+                            <p class="text-sm font-normal text-slate-500">The Automation Backbone</p>
+                        </div>
+                        <div class="text-4xl text-slate-300 mx-4 transform md:rotate-0 rotate-90">➔</div>
+                        <div class="diagram-item bg-stone-100 p-6 rounded-lg text-center shadow w-60 cursor-pointer" data-tech="helm">
+                             <span class="text-4xl mb-2">🧭</span>
+                            <h3 class="text-xl">Helm</h3>
+                             <p class="text-sm font-normal text-slate-500">The K8s Package Manager</p>
+                        </div>
+                        <div class="text-4xl text-slate-300 mx-4 transform md:rotate-0 rotate-90">➔</div>
+                        <div class="diagram-item bg-stone-100 p-6 rounded-lg text-center shadow w-60 cursor-pointer" data-tech="kubernetes">
+                             <span class="text-4xl mb-2">☸️</span>
+                            <h3 class="text-xl">Kubernetes</h3>
+                             <p class="text-sm font-normal text-slate-500">The Orchestration Platform</p>
+                        </div>
+                    </div>
+                    <div id="diagram-info" class="mt-8 p-6 bg-sky-50 border border-sky-200 rounded-lg text-slate-700 min-h-[100px] transition-opacity duration-300 opacity-0">
+                        <p>Hover over or click a component to learn more.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="core-tech" class="content-section">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Core Technologies</h1>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto">This section provides a focused look at each of the three foundational tools. Use the tabs to switch between GitLab CI/CD, Kubernetes, and Helm, and explore their fundamental concepts, components, and inner workings.</p>
+                </div>
+                <div class="flex justify-center mb-8 border-b">
+                    <button class="tech-tab-btn py-2 px-4 text-lg font-medium text-slate-500 border-b-2 border-transparent" data-tech="gitlab">🦊 GitLab</button>
+                    <button class="tech-tab-btn py-2 px-4 text-lg font-medium text-slate-500 border-b-2 border-transparent" data-tech="kubernetes">☸️ Kubernetes</button>
+                    <button class="tech-tab-btn py-2 px-4 text-lg font-medium text-slate-500 border-b-2 border-transparent" data-tech="helm">🧭 Helm</button>
+                </div>
+                <div id="core-tech-content"></div>
+            </section>
+
+            <section id="architecture" class="content-section">
+                 <div class="text-center mb-12">
+                    <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Deployment Architecture</h1>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto">Effective architecture is key to managing complexity. This section explores high-level strategies for structuring projects, from Git branching models and Kubernetes namespace design to managing multiple environments with Helm.</p>
+                </div>
+                <div id="architecture-content" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
+            </section>
+
+            <section id="guides" class="content-section">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Practical Guides</h1>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto">Theory meets practice. Here you'll find a step-by-step walkthrough of a typical deployment flow and an interactive troubleshooting guide to help you diagnose and resolve common issues in your pipeline and cluster.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div id="deployment-flow-guide"></div>
+                    <div id="troubleshooting-guide"></div>
+                </div>
+            </section>
+            
+            <section id="best-practices" class="content-section">
+                 <div class="text-center mb-12">
+                    <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Best Practices & Optimization</h1>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto">Achieving production readiness requires more than just making things work. It requires efficiency, security, and reliability. Use the filters to explore best practices for optimizing your pipelines, securing your deployments, and ensuring maintainability.</p>
+                </div>
+                <div id="practices-content"></div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const data = {
+                techInfo: {
+                    gitlab: {
+                        title: "🦊 GitLab CI/CD",
+                        description: "GitLab is the automation engine. It uses a `.gitlab-ci.yml` file to define pipelines, which are series of jobs that build, test, and deploy your code automatically. It acts as the central orchestrator, triggering actions based on code changes.",
+                        content: `
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h3 class="font-bold text-lg mb-2">Pipelines, Jobs, & Stages</h3>
+                                    <p class="text-slate-600">Pipelines are the top-level component, organized into sequential <span class="font-semibold">Stages</span>. Each stage contains one or more <span class="font-semibold">Jobs</span> that run in parallel. A stage must complete successfully before the next one begins.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h3 class="font-bold text-lg mb-2">.gitlab-ci.yml</h3>
+                                    <p class="text-slate-600">This YAML file is the blueprint for your CI/CD process. It defines all jobs, rules for when they run, and how they are grouped into stages. Using the <code class="bg-slate-200 text-sm p-1 rounded">include</code> keyword helps keep it modular.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h3 class="font-bold text-lg mb-2">CI/CD Variables</h3>
+                                    <p class="text-slate-600">Key-value pairs for dynamic configuration. Use them for environment settings and secrets. <span class="font-semibold">Protected</span> variables are crucial for securing production credentials, only available on protected branches.</p>
+                                </div>
+                                 <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h3 class="font-bold text-lg mb-2">Runners</h3>
+                                    <p class="text-slate-600">These are the agents that execute your CI/CD jobs. The Kubernetes executor is ideal for cloud-native setups, as it spins up a new pod for each job, ensuring a clean, isolated environment.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h3 class="font-bold text-lg mb-2">Secure Credential Management</h3>
+                                    <p class="text-slate-600">Modern pipelines use <span class="font-semibold">OpenID Connect (OIDC)</span> to avoid long-lived static credentials, exchanging short-lived JWTs for access tokens. This dramatically improves security.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h3 class="font-bold text-lg mb-2">GitLab Agent for K8s</h3>
+                                    <p class="text-slate-600">The recommended way to connect GitLab to your cluster. It runs inside the cluster and "pulls" configuration, which is more secure than "pushing" from the CI/CD pipeline and requiring open firewall ports.</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    kubernetes: {
+                        title: "☸️ Kubernetes",
+                        description: "Kubernetes (K8s) is the runtime environment for your applications. It's a container orchestrator that automates deployment, scaling, and management of containerized applications, organizing them into logical units on a cluster of machines (nodes).",
+                         content: `
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h3 class="font-bold text-lg mb-2">Core Architecture</h3>
+                                    <ul class="space-y-2 text-slate-600 list-disc list-inside">
+                                        <li><span class="font-semibold">Cluster:</span> A set of nodes (worker machines).</li>
+                                        <li><span class="font-semibold">Node:</span> A virtual or physical machine that runs workloads.</li>
+                                        <li><span class="font-semibold">Pod:</span> The smallest deployable unit; a group of one or more containers. Pods are ephemeral.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h3 class="font-bold text-lg mb-2">Namespaces</h3>
+                                    <p class="text-slate-600">Namespaces provide logical isolation within a cluster. They are essential for multi-tenant environments to prevent naming conflicts and manage resource access (via RBAC) and quotas per team or environment (e.g., <code class="bg-slate-200 text-sm p-1 rounded">dev</code>, <code class="bg-slate-200 text-sm p-1 rounded">staging</code>, <code class="bg-slate-200 text-sm p-1 rounded">prod</code>).</p>
+                                </div>
+                            </div>
+                            <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
+                                <h3 class="font-bold text-xl mb-4 text-center">Workload Management: Deployment vs. StatefulSet</h3>
+                                <div class="chart-container">
+                                    <canvas id="workloadChart"></canvas>
+                                </div>
+                                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                    <div class="p-4 bg-stone-100 rounded">
+                                        <h4 class="font-semibold">Deployment</h4>
+                                        <p>Ideal for <span class="font-bold">stateless</span> applications (e.g., web servers). Pods are interchangeable, and updates are rolled out easily. Does not guarantee stable identity or storage.</p>
+                                    </div>
+                                    <div class="p-4 bg-stone-100 rounded">
+                                        <h4 class="font-semibold">StatefulSet</h4>
+                                        <p>Essential for <span class="font-bold">stateful</span> applications (e.g., databases). Provides stable, unique network identities, ordered deployment/scaling, and persistent storage per pod.</p>
+                                    </div>
+                                </div>
+                            </div>
+                         `
+                    },
+                    helm: {
+                        title: "🧭 Helm",
+                        description: "Helm is the package manager for Kubernetes. It simplifies deploying and managing applications by bundling all necessary Kubernetes resources (Deployments, Services, etc.) into a single, version-controlled package called a Helm chart.",
+                        content: `
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                               <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h3 class="font-bold text-lg mb-2">What is a Helm Chart?</h3>
+                                    <p class="text-slate-600">A collection of files that describe a related set of Kubernetes resources. It's a directory with a specific structure, including templates and default values.</p>
+                                    <ul class="mt-2 text-sm space-y-1">
+                                        <li><code class="bg-slate-200 p-1 rounded">Chart.yaml</code>: Metadata (name, version).</li>
+                                        <li><code class="bg-slate-200 p-1 rounded">values.yaml</code>: Default configuration values.</li>
+                                        <li><code class="bg-slate-200 p-1 rounded">templates/</code>: Kubernetes manifest templates.</li>
+                                        <li><code class="bg-slate-200 p-1 rounded">charts/</code>: Chart dependencies (subcharts).</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-md">
+                                    <h3 class="font-bold text-lg mb-2">Templating & Values</h3>
+                                    <p class="text-slate-600">Helm uses Go templating to dynamically generate Kubernetes manifests. The power comes from separating configuration (<code class="bg-slate-200 text-sm p-1 rounded">values.yaml</code>) from the resource definitions (<code class="bg-slate-200 text-sm p-1 rounded">templates/</code>). This allows you to deploy the same chart to multiple environments just by providing different value files.</p>
+                                </div>
+                                <div class="bg-white p-6 rounded-lg shadow-md md:col-span-2">
+                                    <h3 class="font-bold text-lg mb-2">Managing Complexity</h3>
+                                    <ul class="space-y-2 text-slate-600 list-disc list-inside">
+                                        <li><span class="font-semibold">Subcharts:</span> A chart can depend on other charts, allowing you to create "umbrella charts" that deploy an entire application stack (e.g., frontend, backend, database) as a single unit.</li>
+                                        <li><span class="font-semibold">Value Overrides:</span> The key to multi-environment setups. Create files like <code class="bg-slate-200 text-sm p-1 rounded">values-prod.yaml</code> to override defaults for production. GitLab CI variables can also override Helm values for dynamic configuration.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        `
+                    }
+                },
+                architecture: {
+                    branching: {
+                        title: "Git Branching Strategies",
+                        content: `
+                            <p class="mb-4 text-slate-600">Your Git branching model directly impacts your CI/CD workflow. The goal is to enable parallel development while maintaining stability in production.</p>
+                            <div class="flex justify-center mb-4 space-x-2">
+                                <button class="arch-toggle-btn p-2 rounded-md bg-sky-600 text-white shadow" data-view="feature">Feature Branching</button>
+                                <button class="arch-toggle-btn p-2 rounded-md bg-white text-slate-700 shadow" data-view="env">Branch-per-Environment</button>
+                            </div>
+                            <div id="branching-view" class="p-4 bg-stone-100 rounded-lg"></div>
+                        `,
+                        views: {
+                            feature: {
+                                name: "Feature Branching (Recommended)",
+                                text: `<p class="font-semibold">How it works:</p>
+                                       <ul class="list-disc list-inside mb-2"><li>All changes are made in short-lived feature branches.</li><li>Pipelines run on Merge Requests to test changes before merging.</li><li>The <code class="bg-slate-200 p-1 rounded">main</code> branch is always stable and deployable.</li></ul>
+                                       <p class="font-semibold">Pros:</p>
+                                       <ul class="list-disc list-inside text-green-700"><li>Promotes code quality via mandatory review.</li><li>Isolates changes, reducing risk.</li><li>Avoids long-lived branches and merge conflicts.</li></ul>`
+                            },
+                            env: {
+                                name: "Branch-per-Environment",
+                                text: `<p class="font-semibold">How it works:</p>
+                                       <ul class="list-disc list-inside mb-2"><li>Dedicated branches map to environments (e.g., <code class="bg-slate-200 p-1 rounded">develop</code> -> staging, <code class="bg-slate-200 p-1 rounded">main</code> -> production).</li><li>A push to a branch triggers deployment to its environment.</li></ul>
+                                       <p class="font-semibold">Cons:</p>
+                                       <ul class="list-disc list-inside text-red-700"><li>Branches can live for a long time, leading to merge hell.</li><li>Backporting hotfixes is complex.</li><li>Can create a rigid, slow deployment flow.</li></ul>`
+                            }
+                        }
+                    },
+                    repo: {
+                        title: "Monorepo vs. Polyrepo",
+                        content: `
+                            <p class="mb-4 text-slate-600">How you organize your repositories impacts everything from code sharing to CI/CD pipeline complexity.</p>
+                             <div class="flex justify-center mb-4 space-x-2">
+                                <button class="arch-toggle-btn p-2 rounded-md bg-sky-600 text-white shadow" data-view="monorepo">Monorepo</button>
+                                <button class="arch-toggle-btn p-2 rounded-md bg-white text-slate-700 shadow" data-view="polyrepo">Polyrepo</button>
+                            </div>
+                            <div id="repo-view" class="p-4 bg-stone-100 rounded-lg"></div>
+                        `,
+                        views: {
+                            monorepo: {
+                                name: "Monorepo: One Repo to Rule Them All",
+                                text: `<p class="font-semibold">Definition:</p><p class="mb-2">A single repository for multiple projects/services.</p>
+                                       <p class="font-semibold">Pros:</p><ul class="list-disc list-inside text-green-700 mb-2"><li>Simplified code sharing.</li><li>Atomic commits across services.</li></ul>
+                                       <p class="font-semibold">Cons:</p><ul class="list-disc list-inside text-red-700"><li>CI/CD can be slow and complex (needs <code class="bg-slate-200 p-1 rounded">rules:changes</code>).</li><li>Scalability issues as repo grows.</li><li>Higher risk of widespread impact from a single mistake.</li></ul>`
+                            },
+                            polyrepo: {
+                                name: "Polyrepo: A Repo for Every Service",
+                                text: `<p class="font-semibold">Definition:</p><p class="mb-2">Each service or component gets its own repository.</p>
+                                       <p class="font-semibold">Pros:</p><ul class="list-disc list-inside text-green-700 mb-2"><li>High team autonomy and independent deployments.</li><li>Faster, simpler CI/CD pipelines per service.</li><li>Localized risk.</li></ul>
+                                       <p class="font-semibold">Cons:</p><ul class="list-disc list-inside text-red-700"><li>Managing dependencies between repos is complex.</li><li>Coordination needed for cross-repo changes.</li><li>Potential for configuration drift.</li></ul>`
+                            }
+                        }
+                    }
+                },
+                guides: {
+                    deploymentFlow: {
+                        title: "Step-by-Step Deployment Flow",
+                        steps: [
+                            { title: "1. Code Change", description: "A developer pushes code to a new feature branch. This isolates the work." },
+                            { title: "2. Merge Request & Pipeline", description: "A Merge Request (MR) is created. This automatically triggers a pipeline in GitLab to validate the changes." },
+                            { title: "3. Build & Test", description: "The pipeline runs jobs to lint code, run unit/integration tests, and build a container image tagged with a unique commit SHA." },
+                            { title: "4. Push to Registry", description: "The newly built and tested Docker image is pushed to a container registry (e.g., GitLab Container Registry, Docker Hub)." },
+                            { title: "5. Deploy to Staging", description: "A job in the pipeline runs <code class='bg-slate-200 p-1 rounded'>helm upgrade</code>, using the GitLab Agent to connect to the staging K8s cluster. It deploys the new image tag to the staging namespace." },
+                            { title: "6. Validate & Approve", description: "The changes are reviewed in the staging environment. After approval, the MR is merged into the main branch." },
+                            { title: "7. Promote to Production", description: "Merging to the main (protected) branch triggers a production pipeline. This pipeline uses protected variables to deploy the same Helm chart with production-specific values to the production K8s cluster." }
+                        ]
+                    },
+                    troubleshooting: {
+                        title: "Interactive Troubleshooting Guide",
+                        issues: [
+                            {
+                                symptom: "Pipeline fails on a <code class='bg-slate-200 p-1 rounded'>.gitlab-ci.yml</code> syntax error",
+                                cause: "Incorrect YAML formatting, invalid keywords, or indentation issues.",
+                                solution: "Use GitLab's built-in <strong>Pipeline Editor</strong> or <strong>CI Lint tool</strong> for real-time validation before committing. Check indentation carefully (always spaces, never tabs)."
+                            },
+                            {
+                                symptom: "Helm command fails with <code class='bg-red-200 text-red-800 p-1 rounded'>Error: failed to render template</code>",
+                                cause: "A value referenced in a template is missing from `values.yaml`, or there is a typo in a Go template function.",
+                                solution: "Run <code class='bg-slate-200 p-1 rounded'>helm template . --debug</code> locally to see the rendered output and pinpoint the error. Check that all <code class='bg-slate-200 p-1 rounded'>.Values</code> paths are correct."
+                            },
+                             {
+                                symptom: "Kubernetes Pod is stuck in <code class='bg-yellow-200 text-yellow-800 p-1 rounded'>Pending</code> state",
+                                cause: "The cluster doesn't have enough resources (CPU/Memory) to schedule the pod, or the pod requires a PersistentVolumeClaim that cannot be fulfilled.",
+                                solution: "Run <code class='bg-slate-200 p-1 rounded'>kubectl describe pod &lt;pod-name&gt;</code>. Look at the 'Events' section at the bottom for messages from the scheduler explaining why it can't be scheduled."
+                            },
+                            {
+                                symptom: "Kubernetes Pod is in a <code class='bg-red-200 text-red-800 p-1 rounded'>CrashLoopBackOff</code> state",
+                                cause: "The application inside the container is starting and then immediately crashing. This is usually due to a misconfiguration or a bug in the application code.",
+                                solution: "Check the logs immediately! Run <code class='bg-slate-200 p-1 rounded'>kubectl logs &lt;pod-name&gt;</code> to see the application's error output. Also check environment variables and mounted ConfigMaps/Secrets for correctness."
+                            },
+                            {
+                                symptom: "Kubernetes Pod shows <code class='bg-red-200 text-red-800 p-1 rounded'>ImagePullBackOff</code>",
+                                cause: "Kubernetes cannot pull the container image. This could be a typo in the image name/tag, or missing credentials for a private registry.",
+                                solution: "Run <code class='bg-slate-200 p-1 rounded'>kubectl describe pod &lt;pod-name&gt;</code>. Check the 'Events' for the exact pull error. Verify the image name and tag in your Helm values and ensure an `imagePullSecrets` is configured if needed."
+                            }
+                        ]
+                    }
+                },
+                practices: {
+                    filters: ["All", "Efficiency", "Security", "Reliability", "Maintainability"],
+                    items: [
+                        { category: "Efficiency", title: "Cache Dependencies", description: "Use GitLab's `cache` keyword to store downloaded packages between pipeline runs. This drastically speeds up jobs by avoiding redundant downloads." },
+                        { category: "Efficiency", title: "Use Small Docker Images", description: "Start with minimal base images (e.g., alpine) and use multi-stage builds to keep your final runtime images small, leading to faster pulls and deployments." },
+                        { category: "Reliability", title: "Fail Fast", description: "Structure your pipeline so that quick checks like linting and unit tests run first. This provides faster feedback and saves CI minutes by not running long jobs that are destined to fail." },
+                        { category: "Security", title: "Use Protected Branches & Variables", description: "Protect your `main` branch to enforce merge request reviews. Store production credentials in Protected Variables, which are only available to jobs running on protected branches." },
+                        { category: "Security", title: "Leverage OIDC", description: "Use OpenID Connect for authenticating with cloud providers. This avoids storing long-lived secret keys in CI/CD variables, significantly improving your security posture." },
+                        { category: "Reliability", title: "Automated Rollbacks", description: "Helm tracks deployment history, making rollbacks simple with `helm rollback`. Test your rollback procedure to ensure you can recover quickly from a bad deployment." },
+                        { category: "Maintainability", title: "Keep Charts DRY", description: "Use Helm's `_helpers.tpl` file to define reusable template snippets. This avoids duplicating Kubernetes YAML and makes your charts easier to maintain." },
+                        { category: "Maintainability", title: "Separate Config from Logic", description: "Never hardcode environment-specific values in Helm templates. Manage all configuration through `values.yaml` files and CI/CD variables for maximum flexibility." },
+                        { category: "Security", title: "Least Privilege RBAC", description: "Configure Kubernetes Role-Based Access Control (RBAC) so that your CI/CD service account has only the permissions it absolutely needs in the cluster, and nothing more." }
+                    ]
+                }
+            };
+            
+            const app = {
+                navLinks: document.querySelectorAll('.nav-link'),
+                contentSections: document.querySelectorAll('.content-section'),
+                currentHash: window.location.hash || '#overview',
+
+                init() {
+                    this.setupNavigation();
+                    this.setupInteractiveDiagram();
+                    this.setupCoreTechTabs();
+                    this.setupArchitectureToggles(); // This function was causing the error
+                    this.renderDeploymentFlow();
+                    this.renderTroubleshootingGuide();
+                    this.renderBestPractices();
+                    this.navigateTo(this.currentHash);
+                },
+
+                setupNavigation() {
+                    this.navLinks.forEach(link => {
+                        link.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const hash = e.currentTarget.getAttribute('href');
+                            this.navigateTo(hash);
+                        });
+                    });
+                     window.addEventListener('hashchange', () => this.navigateTo(window.location.hash));
+                },
+                
+                navigateTo(hash) {
+                    if (!hash) hash = '#overview';
+                    history.pushState(null, null, hash);
+
+                    this.navLinks.forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href') === hash);
+                    });
+
+                    this.contentSections.forEach(section => {
+                        section.classList.toggle('active', `#${section.id}` === hash);
+                    });
+                },
+
+                setupInteractiveDiagram() {
+                    const diagramItems = document.querySelectorAll('.diagram-item');
+                    const infoBox = document.getElementById('diagram-info');
+
+                    const showInfo = (techKey) => {
+                        const tech = data.techInfo[techKey];
+                        if (tech) {
+                            infoBox.innerHTML = `<h3 class="font-bold text-lg mb-2">${tech.title}</h3><p>${tech.description}</p>`;
+                            infoBox.style.opacity = 1;
+                        }
+                    };
+                    
+                    diagramItems.forEach(item => {
+                        const techKey = item.dataset.tech;
+                        item.addEventListener('mouseenter', () => showInfo(techKey));
+                        item.addEventListener('click', () => {
+                            this.navigateTo('#core-tech');
+                            // Use timeout to allow navigation to complete before clicking tab
+                            setTimeout(() => {
+                                document.querySelector(`.tech-tab-btn[data-tech="${techKey}"]`).click();
+                            }, 50);
+                        });
+                    });
+                },
+
+                setupCoreTechTabs() {
+                    const tabContainer = document.getElementById('core-tech');
+                    const contentContainer = document.getElementById('core-tech-content');
+                    const tabs = tabContainer.querySelectorAll('.tech-tab-btn');
+
+                    const activateTab = (activeTab) => {
+                        tabs.forEach(tab => {
+                            const is_active = tab === activeTab;
+                            tab.classList.toggle('text-sky-600', is_active);
+                            tab.classList.toggle('border-sky-600', is_active);
+                            tab.classList.toggle('text-slate-500', !is_active);
+                            tab.classList.toggle('border-transparent', !is_active);
+                        });
+                        
+                        const techKey = activeTab.dataset.tech;
+                        contentContainer.innerHTML = data.techInfo[techKey].content;
+
+                        if (techKey === 'kubernetes') {
+                            this.renderWorkloadChart();
+                        }
+                    }
+
+                    tabs.forEach(tab => {
+                        tab.addEventListener('click', () => activateTab(tab));
+                    });
+
+                    // Activate first tab by default
+                    if(tabs.length) activateTab(tabs[0]);
+                },
+
+                renderWorkloadChart() {
+                    const ctx = document.getElementById('workloadChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Deployment', 'StatefulSet'],
+                            datasets: [{
+                                label: 'Statefulness (Lower is better for stateless)',
+                                data: [1, 5],
+                                backgroundColor: 'rgba(56, 189, 248, 0.6)',
+                                borderColor: 'rgba(2, 132, 199, 1)',
+                                borderWidth: 1
+                            }, {
+                                label: 'Identity Stability (Higher is more stable)',
+                                data: [1, 5],
+                                backgroundColor: 'rgba(244, 114, 182, 0.6)',
+                                borderColor: 'rgba(219, 39, 119, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 6,
+                                    ticks: {
+                                        callback: function(value) {
+                                            if (value === 1) return 'Low';
+                                            if (value === 5) return 'High';
+                                            return '';
+                                        }
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Key Properties of K8s Workloads'
+                                }
+                            }
+                        }
+                    });
+                },
+
+                setupArchitectureToggles() {
+                    const container = document.getElementById('architecture-content');
+                    // Create the two sub-containers first with unique IDs
+                    container.innerHTML = `
+                        <div id="branching-container" class="bg-white p-6 rounded-lg shadow-md"></div>
+                        <div id="repo-container" class="bg-white p-6 rounded-lg shadow-md"></div>
+                    `;
+
+                    const branchingContainer = document.getElementById('branching-container');
+                    const repoContainer = document.getElementById('repo-container');
+
+                    branchingContainer.innerHTML = data.architecture.branching.content;
+                    repoContainer.innerHTML = data.architecture.repo.content;
+
+                    // Now pass the actual container elements to setupToggle
+                    function setupToggle(containerElement, viewId) { 
+                        const buttons = containerElement.querySelectorAll('.arch-toggle-btn');
+                        const view = containerElement.querySelector(`#${viewId}`); 
+                        
+                        const dataSrc = containerElement.id === 'branching-container' ? data.architecture.branching.views : data.architecture.repo.views;
+
+                        const activateView = (activeButton) => {
+                            buttons.forEach(btn => {
+                                const isActive = btn === activeButton;
+                                btn.classList.toggle('bg-sky-600', isActive);
+                                btn.classList.toggle('text-white', isActive);
+                                btn.classList.toggle('bg-white', !isActive);
+                                btn.classList.toggle('text-slate-700', !isActive);
+                            });
+                            const viewKey = activeButton.dataset.view;
+                            const viewData = dataSrc[viewKey];
+                            view.innerHTML = `<h4 class="font-bold text-lg mb-2 text-slate-800">${viewData.name}</h4><div>${viewData.text}</div>`;
+                        };
+
+                        buttons.forEach(btn => btn.addEventListener('click', () => activateView(btn)));
+                        
+                        if(buttons.length) activateView(buttons[0]);
+                    }
+
+                    setupToggle(branchingContainer, 'branching-view');
+                    setupToggle(repoContainer, 'repo-view');
+                },
+
+                renderDeploymentFlow() {
+                    const container = document.getElementById('deployment-flow-guide');
+                    const { title, steps } = data.guides.deploymentFlow;
+                    let stepsHtml = steps.map((step, index) => `
+                        <div class="relative pl-8 pb-8">
+                            <div class="absolute left-0 top-1 w-4 h-4 rounded-full bg-sky-500 border-4 border-white"></div>
+                            ${index < steps.length - 1 ? '<div class="absolute left-[7px] top-4 h-full w-0.5 bg-slate-200"></div>' : ''}
+                            <h4 class="font-semibold text-lg text-slate-800">${step.title}</h4>
+                            <p class="text-slate-600">${step.description}</p>
+                        </div>
+                    `).join('');
+                    
+                    container.innerHTML = `<div class="bg-white p-6 rounded-lg shadow-md h-full">
+                        <h3 class="text-xl font-bold mb-4">${title}</h3>
+                        <div>${stepsHtml}</div>
+                    </div>`;
+                },
+
+                renderTroubleshootingGuide() {
+                    const container = document.getElementById('troubleshooting-guide');
+                    const { title, issues } = data.guides.troubleshooting;
+
+                    let issuesHtml = issues.map((issue, index) => `
+                        <details class="bg-stone-100 rounded-lg group" ${index === 0 ? 'open' : ''}>
+                            <summary class="p-4 font-semibold cursor-pointer flex justify-between items-center">
+                                ${issue.symptom}
+                                <span class="transform transition-transform duration-200 group-open:rotate-180">▼</span>
+                            </summary>
+                            <div class="p-4 border-t border-slate-200">
+                                <p class="mb-2"><strong class="text-slate-700">Common Cause:</strong> ${issue.cause}</p>
+                                <p><strong class="text-slate-700">Solution:</strong> ${issue.solution}</p>
+                            </div>
+                        </details>
+                    `).join('<div class="h-2"></div>');
+
+                    container.innerHTML = `<div class="bg-white p-6 rounded-lg shadow-md h-full">
+                        <h3 class="text-xl font-bold mb-4">${title}</h3>
+                        <div class="space-y-2">${issuesHtml}</div>
+                    </div>`;
+                },
+                
+                renderBestPractices() {
+                    const container = document.getElementById('practices-content');
+                    const { filters, items } = data.practices;
+
+                    let filtersHtml = filters.map((filter, index) => `
+                        <button class="practice-filter-btn px-4 py-2 text-sm font-medium rounded-full transition ${index === 0 ? 'bg-sky-600 text-white' : 'bg-white text-slate-700 shadow-sm hover:bg-slate-100'}" data-filter="${filter}">
+                            ${filter}
+                        </button>
+                    `).join('');
+
+                    container.innerHTML = `
+                        <div class="flex flex-wrap justify-center gap-2 mb-8">${filtersHtml}</div>
+                        <div id="practices-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                    `;
+
+                    const grid = document.getElementById('practices-grid');
+                    const filterButtons = container.querySelectorAll('.practice-filter-btn');
+
+                    const displayItems = (filter) => {
+                        let filteredItems = filter === 'All' ? items : items.filter(item => item.category === filter);
+                        grid.innerHTML = filteredItems.map(item => `
+                            <div class="bg-white p-6 rounded-lg shadow-md transition hover:shadow-xl hover:-translate-y-1">
+                                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-sky-100 text-sky-800 mb-2">${item.category}</span>
+                                <h4 class="font-bold text-lg mb-2">${item.title}</h4>
+                                <p class="text-slate-600 text-sm">${item.description}</p>
+                            </div>
+                        `).join('');
+                    };
+
+                    filterButtons.forEach(button => {
+                        button.addEventListener('click', () => {
+                            filterButtons.forEach(btn => {
+                                btn.classList.remove('bg-sky-600', 'text-white');
+                                btn.classList.add('bg-white', 'text-slate-700', 'shadow-sm', 'hover:bg-slate-100');
+                            });
+                            button.classList.add('bg-sky-600', 'text-white');
+                            button.classList.remove('bg-white', 'text-slate-700', 'shadow-sm', 'hover:bg-slate-100');
+                            displayItems(button.dataset.filter);
+                        });
+                    });
+
+                    displayItems('All');
+                }
+            };
+
+            app.init();
+        });
+    </script>
 </body>
 </html>
